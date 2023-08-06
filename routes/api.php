@@ -28,6 +28,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  * ----------------------
  */
 
+  /**
+   * --------------
+   *  USER
+   * --------------
+   */
+     //Create user
+     Route::match(['GET','POST'],'creatuser',[PatientController::class, 'creatuser']);
+     //Read user
+     Route::match(['GET','POST'],'readuser',[PatientController::class, 'readuser']);
+     //Update user
+     Route::match(['PUT','POST'],'updateuser',[PatientController::class, 'updateuser']);
+     //Delete user
+     Route::match(['DELETE','POST'],'deletesuer',[PatientController::class, 'deletesuer']);
+
+
+
 
    /**
     *---------------
@@ -45,6 +61,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     * API PHARMACIE
     *---------------
     */
+
 
 
     /**
