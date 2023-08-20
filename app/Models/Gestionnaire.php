@@ -11,61 +11,47 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Patient
+ * Class Gestionnaire
  * 
  * @property int $id
  * @property string $nom
  * @property string $prenom
  * @property string $date_naissance
- * @property string $genre
  * @property string $telephone
- * @property string $Email
- * @property string $password
+ * @property string $email
  * @property string $cni
- * @property string|null $profession
+ * @property string $domicile
  * @property string|null $ville
  * @property string|null $commune_quartier
- * @property string|null $parrainage
+ * @property string|null $actif
  * @property string|null $id_users
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Collection|Facture[] $factures
- * @property Collection|Ordonnance[] $ordonnances
+ * @property Collection|Superviseur[] $superviseurs
  *
  * @package App\Models
  */
-class Patient extends Model
+class Gestionnaire extends Model
 {
-	protected $table = 'patients';
-
-	protected $hidden = [
-		'password'
-	];
+	protected $table = 'gestionnaires';
 
 	protected $fillable = [
 		'nom',
 		'prenom',
 		'date_naissance',
-		'genre',
 		'telephone',
-		'Email',
-		'password',
+		'email',
 		'cni',
-		'profession',
+		'domicile',
 		'ville',
 		'commune_quartier',
-		'parrainage',
+		'actif',
 		'id_users'
 	];
 
-	public function factures()
+	public function superviseurs()
 	{
-		return $this->hasMany(Facture::class, 'patients_id');
-	}
-
-	public function ordonnances()
-	{
-		return $this->hasMany(Ordonnance::class, 'patients_id');
+		return $this->hasMany(Superviseur::class, 'gestionnaires_id');
 	}
 }

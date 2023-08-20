@@ -11,61 +11,57 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Patient
+ * Class Livreur
  * 
  * @property int $id
+ * @property int $zone_supervisions_id
  * @property string $nom
  * @property string $prenom
  * @property string $date_naissance
- * @property string $genre
  * @property string $telephone
- * @property string $Email
- * @property string $password
  * @property string $cni
- * @property string|null $profession
- * @property string|null $ville
- * @property string|null $commune_quartier
- * @property string|null $parrainage
+ * @property string $telephone_parents
+ * @property string $email
+ * @property string|null $nom_parent
+ * @property string|null $actif
  * @property string|null $id_users
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Collection|Facture[] $factures
+ * @property ZoneSupervision $zone_supervision
  * @property Collection|Ordonnance[] $ordonnances
  *
  * @package App\Models
  */
-class Patient extends Model
+class Livreur extends Model
 {
-	protected $table = 'patients';
+	protected $table = 'livreurs';
 
-	protected $hidden = [
-		'password'
+	protected $casts = [
+		'zone_supervisions_id' => 'int'
 	];
 
 	protected $fillable = [
+		'zone_supervisions_id',
 		'nom',
 		'prenom',
 		'date_naissance',
-		'genre',
 		'telephone',
-		'Email',
-		'password',
 		'cni',
-		'profession',
-		'ville',
-		'commune_quartier',
-		'parrainage',
+		'telephone_parents',
+		'email',
+		'nom_parent',
+		'actif',
 		'id_users'
 	];
 
-	public function factures()
+	public function zone_supervision()
 	{
-		return $this->hasMany(Facture::class, 'patients_id');
+		return $this->belongsTo(ZoneSupervision::class, 'zone_supervisions_id');
 	}
 
 	public function ordonnances()
 	{
-		return $this->hasMany(Ordonnance::class, 'patients_id');
+		return $this->hasMany(Ordonnance::class, 'livreurs_id');
 	}
 }
