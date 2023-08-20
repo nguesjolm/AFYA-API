@@ -8,6 +8,10 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class User
@@ -22,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class User extends Model
 {
+	use HasApiTokens, HasFactory;
 	protected $table = 'users';
 
 	protected $hidden = [
@@ -29,7 +34,7 @@ class User extends Model
 	];
 
 	protected $fillable = [
-		'email',
+		'phone',
 		'remember_token'
 	];
 }
