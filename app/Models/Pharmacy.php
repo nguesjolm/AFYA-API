@@ -9,10 +9,6 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 
 /**
  * Class Pharmacy
@@ -40,7 +36,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Pharmacy extends Model
 {
-    use HasApiTokens,HasFactory;
 	protected $table = 'pharmacies';
 
 	protected $casts = [
@@ -50,7 +45,7 @@ class Pharmacy extends Model
 	protected $fillable = [
 		'zone_supervisions_id',
 		'nom',
-		'tel_pharmacie',
+		'contacts',
 		'Email',
 		'ville',
 		'commune_quartier',

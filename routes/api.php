@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\http\Controllers\Patientcontroller;
@@ -7,7 +8,7 @@ use App\http\Controllers\Pharmaciecontroller;
 use Ap\http\Controllers\livreurcontroller;
 use App\http\controllers\Admincontroller;
 
-/*
+/*a      
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
@@ -23,25 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-                                     /* LES API DE L'APPLICATION*/ 
 
-                                     
+
 /*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-/**
  * ----------------------
  *  API AFYA ENDPOINTS
  *    AFYAAPI v1
@@ -61,7 +46,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
           //inscription
           Route::match(['GET','POST'],'inscriptionPatient',[ Patientcontroller::class, 'inscriptionPatient']);
           //connection
-          Route::match(['GET','POST'],'loginPatient',[PatientController::class, 'loginPatient'])->middleware('auth:sanctum');
+          Route::match(['GET','POST'],'loginPatient',[PatientController::class, 'loginPatient']);
           //generate OTP
           route::match (["GET","POST"],"generateOtp",[patientcontroller::class,"generateOtp"]);
           //Check OTP
@@ -72,8 +57,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        *  COMPTE
        * ----------
        */
-          route::match (["GET","POST"],"getPatientCount",[patientcontroller::class,"getPatientCount"])->middleware('auth:sanctum');
-          route::match (["PUT","POST"],"updatePatientCount",[patientcontroller::class,"updatePatientCount"])->middleware('auth:sanctum');
+          route::match (["GET","POST"],"getPatientCount",[patientcontroller::class,"getPatientCount"]);
+          route::match (["PUT","POST"],"updatePatientCount",[patientcontroller::class,"updatePatientCount"]);
 
       /**
        * ------------
@@ -83,7 +68,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
           route::match (["GET","POST"],"sendOrdonnance",[patientcontroller::class,"sendOrdonnance"]);
           route::match (["GET","POST"],"getAllOrdonnance",[patientcontroller::class,"getAllOrdonnance"]);
           route::match (["GET","POST"],"getOrdonnanceByStatus",[patientcontroller::class,"getOrdonnanceByStatus"]);
-          route::match (["GET","POST"],"updateOrdonStatus",[patientcontroller::class,"updateOrdonStatus"]);
+          route::match (["PUT","POST"],"updateOrdonStatus",[patientcontroller::class,"updateOrdonStatus"]);
           route::match (["GET","POST"],"getOneOrdonById",[patientcontroller::class,"getOneOrdonById"]);
         
       /**
@@ -189,13 +174,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * ORDONNANCE
        * -------------------
        */
-          route:: match (["GET","POST"],"getallLivreurordonnance",[livreurcontroller::class,"getallordonnance"]);
-          route:: match (["GET","POST"],"getLivreurordonnancebystatus",[livreurcontroller::class,"getordonnancebystatus"]);
-          route:: match (["GET","POST"],"getLivreurordonnancebyid",[livreurcontroller::class,"getordonnancebyid"]);
-          route:: match (["GET","POST"],"getLivreurordonnancebyid",[livreurcontroller::class,"getordonnancebyid"]);
-          route:: match (["GET","POST"],"changeLivreurordonnanceState",[livreurcontroller::class,"changeLivreurordonnanceState"]);
-      
-
+          route:: match (["GET","POST"],"getallordonnance",[livreurcontroller::class,"getallordonnance"]);
+          route:: match (["GET","POST"],"getordonnancebystatus",[livreurcontroller::class,"getordonnancebystatus"]);
+          route:: match (["GET","POST"],"getordonnancebyid",[livreurcontroller::class,"getordonnancebyid"]);
     /**
     *---------------
     * API ADMIN
@@ -293,3 +274,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
  
+

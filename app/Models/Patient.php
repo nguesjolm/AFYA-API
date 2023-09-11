@@ -7,28 +7,26 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class Patient
  * 
  * @property int $id
- * @property string $nom
- * @property string $prenom
- * @property string $date_naissance
- * @property string $genre
- * @property string $telephone
- * @property string $Email
- * @property string $password
- * @property string $cni
+ * @property string|null $nom
+ * @property string|null $prenom
+ * @property string|null $date_naissance
+ * @property string|null $genre
+ * @property string|null $telephone
+ * @property string|null $email
+ * @property string|null $password
+ * @property string|null $cni
  * @property string|null $profession
  * @property string|null $ville
  * @property string|null $commune_quartier
  * @property string|null $parrainage
- * @property string|null $id_users
+ * @property int|null $id_users
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -39,10 +37,11 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class Patient extends Model
 {
-
-	 use HasApiTokens, HasFactory;
-
 	protected $table = 'patients';
+
+	protected $casts = [
+		'id_users' => 'int'
+	];
 
 	protected $hidden = [
 		'password'
