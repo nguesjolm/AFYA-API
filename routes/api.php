@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
           //inscription
           Route::match(['GET','POST'],'inscriptionPatient',[ Patientcontroller::class, 'inscriptionPatient']);
           //connection
-          Route::match(['GET','POST'],'loginPatient',[PatientController::class, 'loginPatient']);
+          Route::match(['GET','POST'],'loginPatient',[PatientController::class, 'loginPatient'])->middleware('auth:sanctum');
           //generate OTP
           route::match (["GET","POST"],"generateOtp",[patientcontroller::class,"generateOtp"]);
           //Check OTP
@@ -72,8 +72,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        *  COMPTE
        * ----------
        */
-          route::match (["GET","POST"],"getPatientCount",[patientcontroller::class,"getPatientCount"]);
-          route::match (["PUT","POST"],"updatePatientCount",[patientcontroller::class,"updatePatientCount"]);
+          route::match (["GET","POST"],"getPatientCount",[patientcontroller::class,"getPatientCount"])->middleware('auth:sanctum');
+          route::match (["PUT","POST"],"updatePatientCount",[patientcontroller::class,"updatePatientCount"])->middleware('auth:sanctum');
 
       /**
        * ------------

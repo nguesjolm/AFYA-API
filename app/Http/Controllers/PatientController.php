@@ -314,15 +314,27 @@ class Patientcontroller extends Controller
     function getPatientCount(Request $request)
     {
        try {
-            $user = Auth::user();
-            $patient = Patient::Where('id',$request->id)->get();
-            return response()->json([
-                'statuscode'=>200,
-                'status'  => true,
-                'message' => "affichier le compte du patient",
-                'user'    => $user,
-                'patient' => $patient
-            ], 200);
+            $user = Auth::user();//les droits d'acces
+            $patient = Patient::Where('id',$request->id)->first();
+            if ($patient) {
+                return response()->json([
+                    'statuscode'=>200,
+                    'status'  => true,
+                    'message' => "affichier le compte du patient",
+                    'user'    => $user,
+                    'patient' => $patient
+                ], 200);
+            } else {
+                return response()->json([
+                    'statuscode'=>401,
+                    'status'  => true,
+                    'message' => "aucun compte trouver",
+                    'user'    => $user,
+                    'patient' => $patient
+                ], 401);
+            }
+            
+            
        } catch (\Throwable $th) {
         //throw $th;
         return response()->json([
@@ -340,74 +352,179 @@ class Patientcontroller extends Controller
 
     function updatePatientCount(Request $request)
     {
-        try {
-            $res_telephone = USer::where('telephone',$request->tel)->first();
-            $res_email = USer::where('email',$request->email)->first();
-           
-            if ($res_tel=='') {
-                $validePatient = Validator::make($request->all(),[
-                 'telephone' => 'min:10|max:10|unique:users'
-                ]);
-                if ($valideOffreur->fails()) {
-                    return response()->json(['statuscode'=>'404',
-                                             'status'=>'false',
-                                             'message'=>'Erreur de validation',
-                                             'data'=> '',
-                                             'error'=> $valideOffreur->errors(),
-                                            ],404);
-                }
-                User::where('id', Auth::id())->update(['telephone'=> $request->telephone]);
+        $user = Auth::user();//les droits d'acces
+        $patient = Patient::Where('id',$request->id)->first();
+        if ($patient) 
+        {
+            $validateGenre = Validator::make(
+                $request->all(),
+                [
+                'genre' => 'required',
+             ]
+            );
+            if ($validateGenre->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Veuillez préciser votre genre',
+                    'errors' => $validateGenre->errors()
+                ], 401);
             }
-            if ($res_email=='') {
-                $validePatient = Validator::make($request->all(),[
-                    'email' => 'email|unique:users'
-                ]);
-                if ($validePatient->fails()) {
-                    return response()->json(['statuscode'=>'404',
-                                             'status'=>'false',
-                                             'message'=>'Erreur de validation',
-                                             'data'=> '',
-                                             'error'=> $validePatient->errors(),
-                                            ],404);
-                }
-                User::where('id', Auth::id())->update(['email'=> $request->email]);
+            //Telephone
+            $validateTel = Validator::make(
+                $request->all(),
+                [
+                'telephone' => 'required',
+             ]
+            );
+            if ($validateTel->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Numero de téléphone incorrecte ou existe déjà',
+                    'errors' => $validateTel->errors()
+                ], 401);
             }
-          
-            Patient::where('id', Auth::id())->update(['telephone'      => $request->telephone,
-                                                   'password'  => Hash::make($request->password),
-                                                 ]);
-            Patient::where('users_id',Auth::id())->update(['nom' => $request->nom,
-                                                            'prenom' => $request->prenom,
-                                                            'genre' => $request->genre,
-                                                            'telephone' => $request->telephone,
-                                                            'email' => $request->email,
-                                                            'password' => $request->password,
-                                                            'password' => $request->password,
-                                                            'profession' => $request->profession,
-                                                            'ville' => $request->ville,
-                                                           'cni' => $request->cni,
-                                                           'commune_quartier' => $request->commune_quartier,
-                                                           'parrainage' => $request->parrainage,
-                                                          ]);                                        
-            $user = User::firstWhere('id',Auth::id());
-            $patient = Patient::firstWhere('users_id',Auth::id());                                         
-            return response()->json(['statuscode'=>200,
-                                     'status'  => true,
-                                     'message' => "modifier le compte",
-                                     'user'    => $user,
-                                     'offreur' => $patient
-                                   ], 200);                                                       
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'statuscode'=>500,
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
+            //Email
+            $validateEmail = Validator::make(
+                $request->all(),
+                [
+                'email' => 'required',
+              ]
+            );
+            if ($validateEmail->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'email incorrecte ou existe déjà',
+                    'errors' => $validateEmail->errors()
+                ], 401);
+            }
+            //Mot de passe
+            $validatePass = Validator::make(
+                $request->all(),
+                [
+                'password' => 'required|min:8',
+             ]
+            );
+            if ($validatePass->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Mot de passe minimum 8 caractères',
+                    'errors' => $validatePass->errors()
+                ], 401);
+            }
+            //cni
+            $validateCni = Validator::make(
+                $request->all(),
+                [
+                'cni' => 'required',
+              ]
+            );
+            if ($validateCni->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Numero cni incorrecte ou existe déjà',
+                    'errors' => $validateCni->errors()
+                ], 401);
+            }
+            //profession
+            $validateProfession = Validator::make(
+                $request->all(),
+                [
+                'profession' => 'required',
+             ]
+            );
+            if ($validateProfession->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Veillez rensegner votre profession',
+                    'errors' => $validateProfession->errors()
+                ], 401);
+            }
+            //ville
+            $validateville = Validator::make(
+                $request->all(),
+                [
+                'ville' => 'required',
+             ]
+            );
+            if ($validateville->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'veillez rensegner la ville',
+                    'errors' => $validateville->errors()
+                ], 401);
+            }
+            //quartient ou commune
+            $validatecommune_quartier = Validator::make(
+                $request->all(),
+                [
+                'commune_quartier' => 'required',
+              ]
+            );
+            if ($validatecommune_quartier->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'veillez rensegner la commune ou le quartier',
+                    'errors' => $validatecommune_quartier->errors()
+                ], 401);
+            }
 
-   }
+            //parrainage
+            $validateparrainage = Validator::make(
+                $request->all(),
+                [
+                'parrainage' => 'required',
+                ]
+            );
+            if ($validateparrainage->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'veillez rensegner le parrainage',
+                    'errors' => $validateparrainage->errors()
+                ], 401);
+            }
+            
+            $patient ->update([
+                'nom'        => $request->nom,
+                'prenom'     => $request->prenom,
+                'date_naissance' => $request->date_naissance,
+                'genre'      => $request->genre,
+                'telephone'  => $request->telephone,
+                'email'      => $request ->email,
+                'password' => Hash::make($request->password),
+                'profession' => $request->profession,
+                'cni'        => $request ->cni,
+               'ville'       => $request ->ville,
+               'commune_quartier' => $request ->commune_quartier,
+               'parrainage' => $request->parrainage,
+            ]);   
+            
+            return response()->json([
+                'statusCode' => 200,
+                'status'   => true,
+                'message'  => 'compte patient modifier avec succès',
+                'patient'  => $patient,
+            ], 200);
+
+        } else 
+        {
+            return response()->json([
+                'statusCode' => 401,
+                'status' => false,
+                'message' => 'une erreur ses produit lors de la modification verifier les données',
+            ], 401);
+        }
+        
+     }
+}
 
    
 
