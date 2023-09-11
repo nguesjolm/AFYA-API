@@ -315,7 +315,7 @@ class Patientcontroller extends Controller
     {
        try {
             $user = Auth::user();
-            $patient = Patient::Where('patient_id',$request->id)->find();
+            $patient = Patient::Where('id',$request->id)->get();
             return response()->json([
                 'statuscode'=>200,
                 'status'  => true,
