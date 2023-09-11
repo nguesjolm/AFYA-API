@@ -254,7 +254,8 @@ class Patientcontroller extends Controller
      */
    function loginPatient(Request $request)
    {
-    //validation des données
+        try {
+             //validation des données
     $valideClient = Validator::make($request->all(),[
         'tel' => 'required|min:10|max:10',
         'password' => 'required',
@@ -269,13 +270,12 @@ class Patientcontroller extends Controller
        if (hash::check($request->password, $patient->password)  ) 
        {
         //generation de token
-        //$token = $patient->createToken("API TOKEN")->plainTextToken;
         return response()->json([
             'statuscode'=>200,
             'status'  => true,
             'message' => "connecté avec succès",
             'patient' => $patient,
-            // 'token'   => $token,
+            'token'   => $patient->createToken("API TOKEN")->plainTextToken
         ], 200);
 
        }else {
@@ -286,7 +286,6 @@ class Patientcontroller extends Controller
             'errors' => $validateNom->errors()
         ], 401);
        }
-    return 'hello';
 
     }else 
     {
@@ -298,6 +297,14 @@ class Patientcontroller extends Controller
             'errors' => $validateNom->errors()
         ], 401);
     }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'statusCode' => 500,
+                'status' => false,
+                'message' => 'mode passe incorect',
+                'errors' => $validateNom->errors()
+            ], 500);
+        }
    }
 
            /**********************
@@ -308,7 +315,7 @@ class Patientcontroller extends Controller
     {
        try {
             $user = Auth::user();
-            $patient = Patient::Where('patient_id',$request->id);
+            $patient = Patient::Where('patient_id',$request->id)->find();
             return response()->json([
                 'statuscode'=>200,
                 'status'  => true,

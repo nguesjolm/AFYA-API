@@ -7,11 +7,11 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
-use Symfony\Contracts\Service\Attribute\Required;
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Collection;
 /**
  * Class Patient
  * 
@@ -40,7 +40,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 class Patient extends Model
 {
 
-	// use HasApiTokens, HasFactory, Notifiable;
+	 use HasApiTokens, HasFactory;
 
 	protected $table = 'patients';
 
