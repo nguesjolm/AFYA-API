@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Facture;
+use App\Models\Ordonnance;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Patient;
@@ -9,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\TryCatch;
-use App\Models\Ordonnance;
+
 
 
 class Patientcontroller extends Controller
