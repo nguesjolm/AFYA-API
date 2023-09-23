@@ -243,11 +243,11 @@ class Patientcontroller extends Controller
     }
  
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //ptient//
-   //authentification//
-   //inscription//
-   function inscriptionPatient(Request $request)
-  {
+
+    //authentification//
+    //inscription//
+    function inscriptionPatient(Request $request)
+    {
      try {
          //step 1 : Validation des données
              //Tel
@@ -342,21 +342,25 @@ class Patientcontroller extends Controller
                  ], 401);
              }
 
-         //step2 : ouverture de compte
+            //step2 : ouverture de compte
              $user = User::create([
                  'phone' => $request->telephone,
              ]);
-            
+
+             $password = Hash::make($request->mot_passe); 
+
              $patient = Patient::create([
                  'nom'            => $request->nom,
                  'prenom'         => $request->prenom,
                  'date_naissance' => $request->date_naissance,
                  'genre'          => $request->genre,
                  'telephone'      => $request->telephone,
-                 'password'       => $request->mot_passe,
+                 'password'       => $password,
                  'profession'     => $request->profession,
-                 'patients_id '   => $request -> patient->id,
-                 'livreurs_id'    => $request->livreur->id,
+                 'parrainage'     => $request->parainage,
+                 'ville'           => $request->ville,
+                 'commune_quartier' => $request->commune_quartier,   
+                 'id_users'       => $user->id,  
              ]);
          //step3 : generation de token
          return response()->json([
@@ -374,7 +378,56 @@ class Patientcontroller extends Controller
              'message' => $th->getMessage()
          ], 500);
      }
-   }
+    }
+
+    //login patient
+    function loginPatient(Request $request)
+    {
+        try {
+            $validePatient = Validator::make($request->all(),[
+                'tel'      => 'required',
+                'password' => 'required',
+            ]);
+            if ($validePatient->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Numero de téléphone et mot de passe obligatoire',
+                    'errors' => $validePatient->errors()
+                ], 401);
+            }
+            #Vérifier les données de connection
+            $patient = Patient::firstWhere('telephone',$request->tel);
+            $check = Hash::check($request->password, $patient->password);
+            if ($check) {
+                $user = User::firstWhere('phone', $request->tel)->first();
+                return response()->json([
+                    "statuscode"=>200,
+                    "status"    =>true,
+                    "message"   =>"connecté avec succès",
+                    "patient"   =>$patient,
+                    "token"     =>$user->createToken("API TOKEN")->plainTextToken
+                 ],200);
+            }else{
+                return response()->json
+                ([
+                    "statuscode"=>401,
+                    "status"=>true,
+                    "message"=>"mot de passe ou telephone incorrecte",
+                    "patient"=>[],
+                 ],401);
+            }
+            
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'statusCode' => 500,
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 
    ////////////////////////////////////////////////////////////////
    function getAllOrdonnance(request $request)
