@@ -429,6 +429,36 @@ class Patientcontroller extends Controller
         }
     }
 
+    //Generate OTP
+    function generateOtp(Request $request)
+    {
+        try {
+            $valideTel = Validator::make($request->all(),[
+                'tel'      => 'required|min:10'
+            ]);
+            if ($valideTel->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Numero de téléphone incorrecte',
+                    'errors' => $valideTel->errors()
+                ], 401);
+            }
+
+            #Send OTP code to phone
+            return GenerateCode();
+
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'statusCode' => 500,
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
    ////////////////////////////////////////////////////////////////
    function getAllOrdonnance(request $request)
    {
