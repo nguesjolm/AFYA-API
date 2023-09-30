@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 //Importer les controller
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PharmacieController;
+use App\Http\Controllers\LivreurController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,7 +115,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * -------------------
        */
           route:: match (["GET","POST"],"pharmacieCount",[pharmaciecontroller::class,"pharmacieCount"]);
-          route:: match (["GET","POST"],"updatePharmacieCount",[pharmaciecontroller::class,"updatePharmacieCount"]);
+          route:: match (["PUT","POST"],"updatePharmacieCount",[pharmaciecontroller::class,"updatePharmacieCount"]);
 
       /**
        * -------------------
@@ -121,7 +124,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        */
           route:: match (["GET","POST"],"getPharmacieOrdon",[pharmaciecontroller::class,"getPharmacieOrdon"]);
           route:: match (["GET","POST"],"getPharmacieOrdonStatus",[pharmaciecontroller::class,"getPharmacieOrdonStatus"]);
-          route:: match (["GET","POST"],"updatePharmacieOrdonStatus",[pharmaciecontroller::class,"updatePharmacieOrdonStatus"]);
+          route:: match (["PUT","POST"],"updatePharmacieOrdonStatus",[pharmaciecontroller::class,"updatePharmacieOrdonStatus"]);
           route:: match (["GET","POST"],"getPharmacieOrdonId",[pharmaciecontroller::class,"getPharmacieOrdonId"]);
           route:: match (["GET","POST"],"posologieduneordonnance",[pharmaciecontroller::class,"posologieduneordonnance"]);
 
@@ -133,7 +136,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        */
           route:: match (["GET","POST"],"sendFacture",[pharmaciecontroller::class,"sendFacture"]);
           route:: match (["GET","POST"],"getPharmcieFacture",[pharmaciecontroller::class,"getPharmcieFacture"]);
-          route:: match (["GET","POST"],"getPharmacieFacture",[pharmaciecontroller::class,"getPharmacieFacture"]);
+          route:: match (["GET","POST"],"getPharmacieFactureId",[pharmaciecontroller::class,"getPharmacieFactureId"]);
           route:: match (["GET","POST"],"getFactureStatus",[pharmaciecontroller::class,"getFactureStatus"]);
 
 
@@ -162,19 +165,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        */  
 
           route:: match (["GET","POST"],"getLivreurCount",[livreurcontroller::class,"getLivreurCount"]);
-          route:: match (["GET","POST"],"updateLivreurCount",[livreurcontroller::class,"updateLivreurCount"]);
+          route:: match (["PUT","POST"],"updateLivreurCount",[livreurcontroller::class,"updateLivreurCount"]);
 
       /**
        * -------------------
        * ORDONNANCE
        * -------------------
        */
-          route:: match (["GET","POST"],"getallLivreurordonnance",[livreurcontroller::class,"getallordonnance"]);
-          route:: match (["GET","POST"],"getLivreurordonnancebystatus",[livreurcontroller::class,"getordonnancebystatus"]);
-          route:: match (["GET","POST"],"getLivreurordonnancebyid",[livreurcontroller::class,"getordonnancebyid"]);
-          route:: match (["GET","POST"],"getLivreurordonnancebyid",[livreurcontroller::class,"getordonnancebyid"]);
-          route:: match (["GET","POST"],"changeLivreurordonnanceState",[livreurcontroller::class,"changeLivreurordonnanceState"]);
-      
+          route:: match (["GET","POST"],"getallordonnance",[livreurcontroller::class,"getallordonnance"]);
+          route:: match (["GET","POST"],"getordonnancebystatus",[livreurcontroller::class,"getordonnancebystatus"]);
+          route:: match (["GET","POST"],"getordonnancebyid",[livreurcontroller::class,"getordonnancebyid"]);
+
 
     /**
     *---------------
@@ -243,7 +244,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        */
           route:: match (["GET","POST"],"ajouerunlivreur",[admincontroller::class,"ajouerunlivreur"]);
           route:: match (["GET","POST"],"getonelivreurbyid",[admincontroller::class,"getonelivreurbyid"]);
-          route:: match (["GET","POST"],"updateonelivreur",[admincontroller::class,"updateonelivreur"]);
+          route:: match (["PUT","POST"],"updateonelivreur",[admincontroller::class,"updateonelivreur"]);
           route:: match (["GET","POST"],"getalllivreur",[admincontroller::class,"getalllivreur"]);
           route:: match (["GET","POST"],"getalllivreurbystatus",[admincontroller::class,"getalllivreurbystatus"]);
          
@@ -254,7 +255,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * -------------------
        */
           route:: match (["GET","POST"],"ajouterunepharmacie",[admincontroller::class,"ajouterunepharmacie"]);
-          route:: match (["GET","POST"],"updateonepharmacie",[admincontroller::class,"updateonepharmacie"]);
+          route:: match (["PUT","POST"],"updateonepharmacie",[admincontroller::class,"updateonepharmacie"]);
           route:: match (["GET","POST"],"getallpharmacie",[admincontroller::class,"getallpharmacie"]);
           route:: match (["GET","POST"],"getonepharmacie",[admincontroller::class,"getonepharmacie"]);
           route:: match (["GET","POST"],"getallpharmaciebystatus",[admincontroller::class,"getallpharmaciebystatus"]);
@@ -268,7 +269,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        */
           route:: match (["GET","POST"],"getallpatients",[admincontroller::class,"getallpatients"]);
           route:: match (["GET","POST"],"getonepatient",[admincontroller::class,"getonepatient"]);
-          route:: match (["GET","POST"],"updateonepatient",[admincontroller::class,"updateonepatient"]);
+          route:: match (["PUT","POST"],"updateonepatient",[admincontroller::class,"updateonepatient"]);
           route:: match (["GET","POST"],"lockonepatient",[admincontroller::class,"lockonepatient"]);
 
    

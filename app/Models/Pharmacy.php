@@ -45,7 +45,7 @@ class Pharmacy extends Model
 	protected $fillable = [
 		'zone_supervisions_id',
 		'nom',
-		'contacts',
+		'telephone',
 		'Email',
 		'ville',
 		'commune_quartier',
