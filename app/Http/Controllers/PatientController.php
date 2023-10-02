@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Patient;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\TryCatch;
 
@@ -248,7 +249,7 @@ class Patientcontroller extends Controller
     //inscription//
     function inscriptionPatient(Request $request)
     {
-     try {
+        try {
          //step 1 : Validation des données
              //Tel
              $validateTel = Validator::make($request->all(), 
@@ -370,14 +371,14 @@ class Patientcontroller extends Controller
              'patient'  =>$patient,
              'token'   => $user->createToken("API TOKEN")->plainTextToken
          ], 200);
-     } catch (\Throwable $th) {
+        } catch (\Throwable $th) {
          //throw $th;
          return response()->json([
              'statusCode' => 500,
              'status' => false,
              'message' => $th->getMessage()
          ], 500);
-     }
+        }
     }
 
     //login patient
@@ -458,6 +459,208 @@ class Patientcontroller extends Controller
             ], 500);
         }
     }
+
+
+    /**
+     * --------------------
+     *  GESTION DE COMPTE
+     * -------------------
+     */
+      //Get count
+      function getPatientCount(Request $request)
+      {
+         $user = Auth::user();
+         $patient = Patient::firstWhere('id_users',$user->id);
+         if ($patient) {
+            return response()->json([
+                'statusCode' => 200,
+                'status' => true,
+                'message' => 'Compte patient',
+                'patient' => $patient
+            ], 200);
+         }else{
+            return response()->json([
+                'statusCode' => 404,
+                'status' => false,
+                'message' => "Ce compte n'existe pas",
+                'patient' => $patient
+            ], 200);
+         }
+      }
+
+      //Update count
+      function updatePatientCount(Request $request)
+      {
+
+        #Reception des données
+         $user = Auth::user();
+         $patient = Patient::firstWhere('id_users',$user->id);
+            //nom
+            if ($request->nom) {
+                $validateNom = Validator::make($request->all(), 
+                [
+                    'nom' => 'required|min:3',
+                ]);
+                if ($validateNom->fails()) {
+                    return response()->json([
+                        'statusCode' => 401,
+                        'status' => false,
+                        'message' => 'Veuillez entrer votre nom minimum 3 caract^ères',
+                        'errors' => $validateNom->errors()
+                    ], 401);
+                }
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['nom' => $request->nom]);
+
+            }
+
+            //prenom
+            if ($request->prenom) {
+                $validateprenom = Validator::make($request->all(), 
+                [
+                    'prenom' => 'required|min:3',
+                ]);
+                if ($validateprenom->fails()) {
+                    return response()->json([
+                        'statusCode' => 401,
+                        'status' => false,
+                        'message' => 'Veuillez entrer votre prenom minimum 3 caract^ères',
+                        'errors' => $validateprenom->errors()
+                    ], 401);
+                }
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['prenom' => $request->prenom]);
+
+            }
+
+            //date_naissance
+            if ($request->date_naissance) {
+               
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['date_naissance' => $request->date_naissance]);
+            }
+
+            //genre
+            if ($request->genre) {
+               
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['genre' => $request->genre]);
+
+            }
+
+            //telephone
+            if ($request->telephone) {
+                $validateTelephone = Validator::make($request->all(), 
+                [
+                    'telephone' => 'required|min:10|unique:patients',
+                ]);
+                if ($validateTelephone->fails()) {
+                    return response()->json([
+                        'statusCode' => 401,
+                        'status' => false,
+                        'message' => 'Ce téléphone existe déjà',
+                        'errors' => $validateTelephone->errors()
+                    ], 401);
+                }
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['telephone' => $request->nom]);
+
+            }
+
+            //Email
+            if ($request->Email) {
+                $validateEmail = Validator::make($request->all(), 
+                [
+                    'Email' => 'email',
+                ]);
+                if ($validateEmail->fails()) {
+                    return response()->json([
+                        'statusCode' => 401,
+                        'status' => false,
+                        'message' => 'Veuillez entrer votre email',
+                        'errors' => $validateEmail->errors()
+                    ], 401);
+                }
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['email' => $request->email]);
+
+            }
+
+
+            //profession
+            if ($request->profession) {
+                $validateprofession= Validator::make($request->all(), 
+                [
+                    'profession' => 'required|min:3',
+                ]);
+                if ($validateprofession->fails()) {
+                    return response()->json([
+                        'statusCode' => 401,
+                        'status' => false,
+                        'message' => 'Veuillez entrer votre profession minimum 3 caract^ères',
+                        'errors' => $validateprofession->errors()
+                    ], 401);
+                }
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['profession' => $request->profession]);
+
+            }
+
+            //ville
+            if ($request->ville) {
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['ville' => $request->ville]);
+
+            }
+
+            //profession
+            if ($request->commune_quartier) {
+                $validatecommune_quartier= Validator::make($request->all(), 
+                [
+                    'commune_quartier' => 'required|min:3',
+                ]);
+                if ($validatecommune_quartier->fails()) {
+                    return response()->json([
+                        'statusCode' => 401,
+                        'status' => false,
+                        'message' => 'Veuillez entrer votre commmune minimum 3 caract^ères',
+                        'errors' => $validatecommune_quartier->errors()
+                    ], 401);
+                }
+                #Modification en fonction de l'id patient et l'id_user de la table patient
+                Patient::where('id', $patient->id)
+                        ->where('id_users', $user->id)
+                        ->update(['commune_quartier' => $request->commune_quartier]);
+
+            }
+
+            #Retour
+            $patient = Patient::firstWhere('id_users',$user->id);
+            return response()->json([
+                'statusCode' => 200,
+                'status' => true,
+                'message' => 'Compte patient modifié avec succès',
+                'patient' => $patient
+            ], 200);
+       
+
+      }
 
    ////////////////////////////////////////////////////////////////
    function getAllOrdonnance(request $request)
