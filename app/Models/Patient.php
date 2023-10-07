@@ -14,19 +14,19 @@ use Illuminate\Database\Eloquent\Model;
  * Class Patient
  * 
  * @property int $id
- * @property string $nom
- * @property string $prenom
- * @property string $date_naissance
- * @property string $genre
- * @property string $telephone
- * @property string $Email
- * @property string $password
- * @property string $cni
+ * @property string|null $nom
+ * @property string|null $prenom
+ * @property string|null $date_naissance
+ * @property string|null $genre
+ * @property string|null $telephone
+ * @property string|null $email
+ * @property string|null $password
+ * @property string|null $cni
  * @property string|null $profession
  * @property string|null $ville
  * @property string|null $commune_quartier
  * @property string|null $parrainage
- * @property string|null $id_users
+ * @property int|null $id_users
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
@@ -39,6 +39,10 @@ class Patient extends Model
 {
 	protected $table = 'patients';
 
+	protected $casts = [
+		'id_users' => 'int'
+	];
+
 	protected $hidden = [
 		'password'
 	];
@@ -49,7 +53,7 @@ class Patient extends Model
 		'date_naissance',
 		'genre',
 		'telephone',
-		'Email',
+		'email',
 		'password',
 		'cni',
 		'profession',

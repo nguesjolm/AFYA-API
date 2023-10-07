@@ -39,6 +39,7 @@ class Gestionnaire extends Model
 	protected $fillable = [
 		'nom',
 		'prenom',
+		'password',
 		'date_naissance',
 		'telephone',
 		'email',
