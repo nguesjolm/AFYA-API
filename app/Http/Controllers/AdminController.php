@@ -173,7 +173,7 @@ class Admincontroller extends Controller
              }
              
          //step2 : ouverture de compte
-             $User = User::create([
+             $user = User::create([
                  'phone' => $request->telephone,
              ]);
              $password = Hash::make($request->password);
@@ -190,7 +190,7 @@ class Admincontroller extends Controller
                   'commune'=>$request->commune,
                   'actif'=>$request->actif,
                  'domicile' => $request->domicile,
-                 'id_users'   => $User->id
+                 'id_users'   => $user->id
              ]);
          //step3 : generation de token
          return response()->json([
@@ -198,7 +198,6 @@ class Admincontroller extends Controller
              'status'   => true,
              'message'  => 'compte Gestionnaire ouvert avec succès',
              'Gestionnaire'  =>$Gestionnaire,
-             'token'   => $User->createToken("API TOKEN")->plainTextToken
          ], 200);
      } catch (\Throwable $th) {
          //throw $th;
@@ -267,8 +266,11 @@ class Admincontroller extends Controller
 
   function getAdmincount( Request $request)
   {
-    // $user = Auth::user();
-    $gestionnaire = Gestionnaire::firstWhere('id_users',$request->id);
+    
+    $user = Auth::user();
+    // $admin = $user->id;
+    $gestionnaire = Gestionnaire::firstWhere('id_users',$user->id);
+   
     if ($gestionnaire) {
        return response()->json([
            'statusCode' => 200,
@@ -294,8 +296,8 @@ class Admincontroller extends Controller
    {
 
             #Reception des données
-            //  $user = Auth::user();
-            $patient = Gestionnaire::firstWhere('id_users',$request->id);
+              $user = Auth::user();
+            $gestionnaire = Gestionnaire::firstWhere('id_users',$user->id);
                 //nom
                 if ($request->nom) {
                             $validateNom = Validator::make($request->all(), 
@@ -314,7 +316,6 @@ class Admincontroller extends Controller
                     Gestionnaire::where('id', $gestionnaire->id)
                             ->where('id_users', $user->id)
                             ->update(['nom' => $request->nom]);
-
                 }
 
         //prenom
