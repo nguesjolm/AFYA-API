@@ -197,7 +197,7 @@ class Admincontroller extends Controller
              'statusCode' => 200,
              'status'   => true,
              'message'  => 'compte Gestionnaire ouvert avec succès',
-             'Gestionnaire'  =>$Gestionnaire,
+             'Gestionnaire'  =>$Gestionnaire
          ], 200);
      } catch (\Throwable $th) {
          //throw $th;
@@ -294,19 +294,20 @@ class Admincontroller extends Controller
 
    function updateAdmincount( Request $request)
    {
-
+try {
+    
             #Reception des données
-              $user = Auth::user();
+            $user = Auth::user();
             $gestionnaire = Gestionnaire::firstWhere('id_users',$user->id);
                 //nom
                 if ($request->nom) {
                             $validateNom = Validator::make($request->all(), 
                             [
-                                'nom' => 'required|min:3',
+                             'nom' => 'required|min:3',
                             ]);
                             if ($validateNom->fails()) {
                                 return response()->json([
-                                    'statusCode' => 401,
+                            'statusCode' => 401,
                             'status' => false,
                             'message' => 'Veuillez entrer votre nom minimum 3 caract^ères',
                             'errors' => $validateNom->errors()
@@ -342,10 +343,24 @@ class Admincontroller extends Controller
         //date_naissance
         if ($request->date_naissance) {
            
+            $validatedate_naissance = Validator::make($request->all(), 
+            [
+                'date_naissance' => 'required|min:3',
+            ]);
+            if ($validatedate_naissance->fails()) {
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'Veuillez entrer votre date_naissance minimum 3 caract^ères',
+                    'errors' => $validatedate_naissance->errors()
+                ], 401);
+            }
             #Modification en fonction de l'id gestionnaire et l'id_user de la table gestionnaire
             Gestionnaire::where('id', $gestionnaire->id)
                     ->where('id_users', $user->id)
                     ->update(['date_naissance' => $request->date_naissance]);
+
+                    
         }
 
         
@@ -367,22 +382,22 @@ class Admincontroller extends Controller
             #Modification en fonction de l'id gestionnaire et l'id_user de la table gestionnaire
             Gestionnaire::where('id', $gestionnaire->id)
                     ->where('id_users', $user->id)
-                    ->update(['telephone' => $request->nom]);
+                    ->update(['telephone' => $request->telephone]);
 
         }
 
         //Email
-        if ($request->Email) {
-            $validateEmail = Validator::make($request->all(), 
+        if ($request->email) {
+            $validateemail = Validator::make($request->all(), 
             [
-                'Email' => 'email',
+                'email' => 'required',
             ]);
-            if ($validateEmail->fails()) {
+            if ($validateemail->fails()) {
                 return response()->json([
                     'statusCode' => 401,
                     'status' => false,
                     'message' => 'Veuillez entrer votre email',
-                    'errors' => $validateEmail->errors()
+                    'errors' => $validateemail->errors()
                 ], 401);
             }
             #Modification en fonction de l'id gestionnaire et l'id_user de la table gestionnaire
@@ -393,32 +408,35 @@ class Admincontroller extends Controller
         }
 
         //ville
-        if ($request->ville) {
-            #Modification en fonction de l'id gestionnaire et l'id_user de la table gestionnaire
-            Gestionnaire::where('id', $gestionnaire->id)
-                    ->where('id_users', $user->id)
-                    ->update(['ville' => $request->ville]);
+        // if ($request->ville) 
+        // {
+            
+            
+        //     #Modification en fonction de l'id gestionnaire et l'id_user de la table gestionnaire
+        //     Gestionnaire::where('id', $gestionnaire->id)
+        //             ->where('id_users', $user->id)
+        //             ->update(['ville' => $request->ville]);
 
-        }
+        // }
 
         //Email
-        if ($request->Email) {
-            $validateEmail = Validator::make($request->all(), 
+        if ($request->domicile) {
+            $validatedomicile = Validator::make($request->all(), 
             [
-                'domicile' => 'domicile',
+                'domicile' => 'required',
             ]);
-            if ($validateEmail->fails()) {
+            if ($validatedomicile->fails()) {
                 return response()->json([
                     'statusCode' => 401,
                     'status' => false,
                     'message' => 'Veuillez entrer votre domicile',
-                    'errors' => $validateEmail->errors()
+                    'errors' => $validatedomicile->errors()
                 ], 401);
             }
             #Modification en fonction de l'id gestionnaire et l'id_user de la table gestionnaire
             Gestionnaire::where('id', $gestionnaire->id)
                     ->where('id_users', $user->id)
-                    ->update(['domicile' => $request->domiciel]);
+                    ->update(['domicile' => $request->domicile]);
 
         }
 
@@ -453,6 +471,13 @@ class Admincontroller extends Controller
             'gestionnaire' => $gestionnaire
         ], 200);
    
+} catch (\Throwable $th) {
+    return response()->json([
+        'statusCode' => 500,
+        'status' => false,
+        'message' => $th->getMessage()
+    ], 500);
+}
 
    }
 
