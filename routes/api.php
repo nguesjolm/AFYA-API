@@ -105,17 +105,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * -------------------
        */
           route:: match (["GET","POST"],"inscriptionpharmacie",[pharmaciecontroller::class,"inscriptionpharmacie"]);
-          route:: match (["GET","POST"],"loginPharmacie",[pharmaciecontroller::class,"loginpharmacie"]);
+          route:: match (["GET","POST"],"loginPharmacie",[pharmaciecontroller::class,"loginPharmacie"]);
           route:: match (["GET","POST"],"pharmacieOtp",[pharmaciecontroller::class,"pharmacieOtp"]);
-          route:: match (["GET","POST"],"checkpharmacieOtpe",[pharmaciecontroller::class,"checkpharmacieOtp"]);
+          route:: match (["GET","POST"],"checkpharmacieOtp",[pharmaciecontroller::class,"checkpharmacieOtp"]);
 
       /**
        * -------------------
        * COMPTE
        * -------------------
        */
-          route:: match (["GET","POST"],"pharmacieCount",[pharmaciecontroller::class,"pharmacieCount"]);
-          route:: match (["PUT","POST"],"updatePharmacieCount",[pharmaciecontroller::class,"updatePharmacieCount"]);
+          route:: match (["GET","POST"],"pharmacieCount",[pharmaciecontroller::class,"pharmacieCount"])->middleware('auth:sanctum');
+          route:: match (["PUT","POST"],"updatePharmacieCount",[pharmaciecontroller::class,"updatePharmacieCount"])->middleware('auth:sanctum');
 
       /**
        * -------------------
@@ -164,8 +164,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * -------------------
        */  
 
-          route:: match (["GET","POST"],"getLivreurCount",[livreurcontroller::class,"getLivreurCount"]);
-          route:: match (["PUT","POST"],"updateLivreurCount",[livreurcontroller::class,"updateLivreurCount"]);
+          route:: match (["GET","POST"],"getLivreurCount",[livreurcontroller::class,"getLivreurCount"])->middleware('auth:sanctum');
+          route:: match (["PUT","POST"],"updateLivreurCount",[livreurcontroller::class,"updateLivreurCount"])->middleware('auth:sanctum');
 
       /**
        * -------------------
@@ -188,8 +188,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * AUTHENTICATION
        * ---------------
        */
-          route:: match (["GET","POST"],"inscriptionAdmin",[admincontroller::class,"inscription"]);
-          route:: match (["GET","POST"],"connectionAdmin",[admincontroller::class,"connection"]);
+          route:: match (["GET","POST"],"inscriptionAdmin",[admincontroller::class,"inscriptionAdmin"]);
+          route:: match (["GET","POST"],"connectionAdmin",[admincontroller::class,"connectionAdmin"]);
           route:: match (["GET","POST"],"generateOTP",[admincontroller::class,"generateOTP"]);
           route:: match (["GET","POST"],"checkOTP",[admincontroller::class,"checkOTP"]);
           route:: match (["GET","POST"],"newPassword",[admincontroller::class,"newPassword"]);
@@ -201,7 +201,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * ------------
        */
           route:: match (["GET","POST"],"getAdmincount",[admincontroller::class,"getAdmincount"]);
-          route:: match (["GET","POST"],"updateAdmincount",[admincontroller::class,"updateAdmincount"]);
+          route:: match (["PUT","POST"],"updateAdmincount",[admincontroller::class,"updateAdmincount"]);
 
       /**
        * -------------------
@@ -209,9 +209,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
        * -------------------
        */
           route:: match (["GET","POST"],"ajouterunsuperviseur",[admincontroller::class,"ajouterunsuperviseur"]);
-          route:: match (["GET","POST"],"listedessuperviseurs",[admincontroller::class,"listedessuperviseurs"]);
-          route:: match (["GET","POST"],"getonesuperviseurbyid",[admincontroller::class,"getonesuperviseurbyid"]);
-          route:: match (["GET","POST"],"getsuperviseurbystatus",[admincontroller::class,"getsuperviseurbystatus"]);
+          route:: match (["GET","POST"],"Getallsuperviseurs",[admincontroller::class,"Getallsuperviseurs"]);
+          route:: match (["GET","POST"],"superviseurbyid",[admincontroller::class,"superviseurbyid"]);
+          route:: match (["GET","POST"],"Superviseurbystatus",[admincontroller::class,"Superviseurbystatus"]);
           route:: match (["GET","POST"],"updatesuperviseurstatus",[admincontroller::class,"updatesuperviseurstatus"]);
    
 
@@ -224,17 +224,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
           route:: match (["GET","POST"],"ajouterunezone",[admincontroller::class,"ajouterunezone"]);
           route:: match (["GET","POST"],"getonezonebyid",[admincontroller::class,"getonezonebyid"]);
           route:: match (["GET","POST"],"getallzone",[admincontroller::class,"getallzone"]);
-          route:: match (["GET","POST"],"updateonzone",[admincontroller::class,"updateonzone"]);
+          route:: match (["PUT","POST"],"updateonzone",[admincontroller::class,"updateonzone"]);
 
       /**
        * -------------------
        * GESTIONNAIRE
        * -------------------
        */
-          route:: match (["GET","POST"],"ajouerungestionnaire",[admincontroller::class,"ajouerungestionnaire"]);
-          route:: match (["GET","POST"],"ajouterdesgestionnaires",[admincontroller::class,"ajouterdesgestionnaires"]);
-          route:: match (["GET","POST"],"updategestionnaire",[admincontroller::class,"updategestionnaire"]);
-          route:: match (["GET","POST"],"getgestionnairebyid",[admincontroller::class,"getgestionnairebyid"]);
+          route:: match (["GET","POST"],"sendgestionnaire",[admincontroller::class,"sendgestionnaire"]);
+          route:: match (["GET","POST"],"getallGestionnaire",[admincontroller::class,"getallGestionnaire"]);
+          route:: match (["PUT","POST"],"updategestionnaire",[admincontroller::class,"updategestionnaire"]);
+          route:: match (["GET","POST"],"gestionnairebyid",[admincontroller::class,"gestionnairebyid"]);
    
 
       /**

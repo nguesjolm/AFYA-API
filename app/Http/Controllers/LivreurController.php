@@ -67,7 +67,7 @@ class LivreurController extends Controller
             //telephone du livreur
             $validate_Tel= validator::make($request->all(), 
             [
-                'telephone' => 'required'
+                'telephone' => 'required|min:10|unique:livreurs'
             ]);
             if( $validate_Tel->fails()){
                 return response()->json([
@@ -93,7 +93,7 @@ class LivreurController extends Controller
             //numero de telephone parent du livreur
             $validate_num= validator::make($request->all(), 
             [
-                'telephone_parents' => 'required|min:10'
+                'telephone_parents' => 'required|'
             ]);
             if( $validate_num->fails()){
                 return response()->json([
@@ -142,25 +142,12 @@ class LivreurController extends Controller
                     'errors' => $validate_actif->errors()
                 ],401);
             }
-            // //user livreur
-            // $validate_user= validator::make($request->all(), 
-            // [
-            //     'id_users' => 'required'
-            // ]);
-            // if( $validate_user->fails()){
-            //     return response()->json([
-            //         "statuscode"=>401,
-            //         "status"=>false,
-            //         "message"=>"veillez saisir votre status",
-            //         'errors' => $validate_user->errors()
-            //     ],401);
-            // }
-            //fin de la validation
             
             // ouverture du compte
 
             $user= User::create([
-                'phone' => $request->telephone,
+                
+                'phone' => $request->phone,
             ]);
 
             $livreur= Livreur::create([
@@ -174,7 +161,7 @@ class LivreurController extends Controller
                 'email'               =>$request->email,
                 'nom_parent'          =>$request->nom_parent,
                 'actif'               =>$request->actif,
-                'id_users'            =>$user->id,
+                'id_users'            =>$user->id
             ]);
 
             //generation de token
@@ -184,7 +171,7 @@ class LivreurController extends Controller
                 "status"    =>True,
                 "Message"   =>"votre compte est ouvert avec success",
                 "livreur"   =>$livreur,
-                'token'     => $user->createToken("API TOKEN")->plainTextToken
+               
 
             ],200);
 
@@ -202,7 +189,9 @@ class LivreurController extends Controller
     // connexion du livreur
 
     function loginLivreur(Request $request){
+        
         try {
+            
             // validation des données
              $validateLogin= validator::make($request->all(),[
                 "telephone"=>"required",
@@ -219,12 +208,12 @@ class LivreurController extends Controller
             #Vérifier les données de connection
             $Livreur = Livreur::firstWhere('telephone',$request->telephone);
             if ($Livreur) {
-                $user = User::firstWhere('phone', $request->telephone)->first();
+                $user = User::firstWhere('phone', $request->phone)->first();
                 return response()->json([
                     "statuscode"=>200,
                     "status"    =>true,
                     "message"   =>"connecté avec succès",
-                    "patient"   =>$Livreur,
+                    "livreur"   =>$Livreur,
                     "token"     =>$user->createToken("API TOKEN")->plainTextToken
                  ],200);
             }else{
@@ -259,10 +248,17 @@ class LivreurController extends Controller
   //aficher le compte des patients
 
   function getLivreurCount(Request $request){
-        try {
-            $afLivr= Livreur::all();
 
-            if(count($afLivr)!==0){
+        try {
+        
+            //
+            $user=Auth::user();
+            
+            $afLivr= Livreur::firstwhere('id_users',$user->id);
+            //
+
+            if($afLivr){
+
                 return response()->json([
                     "statuscode"=>200,
                     "status"=>True,
@@ -289,44 +285,247 @@ class LivreurController extends Controller
 
 // modification des information du Livreur
 
-function updateLivreurCount (Request $request){
+function updateLivreurCount (Request $request)
+{
     
-        try 
-        {
+
+
+            // reception des données
+            $user = Auth::user();
+          
+            $livreur = Livreur::firstWhere('id_users',$user->id);
+            //fin
+
+            if($request->nom)
+            {
+               
             // validation des données
-            $id= $request->id;
-            $nom= $request->nom;
-                    
-            //$user=User::all();
-        
-            //modification des données
-            $update=Livreur::where('id',$id)->update(['id'=>$id,'nom'=>$nom]);
-            if($update==0){
+             $validateNom= validator::make($request->all(),[
+                "nom"=>"required|min:3",
+             ]);
+
+             //verification des données entrées
+             if($validateNom->fails()){
                 return response()->json([
-                "statusCode"=>400,
-                "status" =>false,
-                "message"=>"aucune modification patient effectué"
-                    ],400);
-                    }else{
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'trois caractere obligatoire',
+                    'errors' => $validateNom->errors()
+                ], 401);
+
+            //modification des information du livreurs
+            } 
+            Livreur::where('id', $livreur->id)
+            ->where('id_users', $user->id)
+            ->update(['nom' => $request->nom]);
+
+
+        }
+
+        // prenom update
+
+        if($request->prenom)
+        {
+           
+        // validation des données
+         $validatePren= validator::make($request->all(),[
+            "prenom"=>"required|min:3",
+         ]);
+
+         //verification des données entrées
+         if($validatePren->fails()){
+            return response()->json([
+                'statusCode' => 401,
+                'status' => false,
+                'message' => 'trois caractere obligatoire',
+                'errors' => $validatePren->errors()
+            ], 401);
+
+        //modification des information du livreurs
+        } 
+        Livreur::where('id', $livreur->id)
+        ->where('id_users', $user->id)
+        ->update(['prenom' => $request->prenom]);
+
+
+    }
+    
+            // date de naissance update
+
+            if($request->date_naissance)
+            {
+               
+            // validation des données
+             $validate_date= validator::make($request->all(),[
+                "date_naissance"=>"required",
+             ]);
+    
+             //verification des données entrées
+             if($validate_date->fails()){
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'date_naissance obligatoire',
+                    'errors' => $validate_date->errors()
+                ], 401);
+    
+            //modification des information du livreurs
+            } 
+            Livreur::where('id', $livreur->id)
+            ->where('id_users', $user->id)
+            ->update(['date_naissance' => $request->date_naissance]);
+    
+    
+        }
+
+        //  telephone update  //
+
+        if($request->telephone)
+        {
+           
+        // validation des données
+         $validate_Tel= validator::make($request->all(),[
+            "telephone"=>"required|min:3",
+         ]);
+
+         //verification des données entrées
+         if($validate_Tel->fails()){
+            return response()->json([
+                'statusCode' => 401,
+                'status' => false,
+                'message' => 'telephone obligatoire',
+                'errors' => $validate_Tel->errors()
+            ], 401);
+
+        //modification des information du livreurs
+        } 
+        Livreur::where('id', $livreur->id)
+        ->where('id_users', $user->id)
+        ->update(['telephone' => $request->telephone]);
+
+
+    }
+
+   
+            //  telephone parent update  //
+
+            if($request->telephone_parents)
+            {
+               
+            // validation des données
+             $validate_parent= validator::make($request->all(),[
+                "telephone_parents"=>"required|min:3",
+             ]);
+    
+             //verification des données entrées
+             if($validate_parent->fails()){
+                return response()->json([
+                    'statusCode' => 401,
+                    'status' => false,
+                    'message' => 'telephone parent obligatoire',
+                    'errors' => $validate_parent->errors()
+                ], 401);
+    
+            //modification des information du livreurs
+            } 
+            Livreur::where('id', $livreur->id)
+            ->where('id_users', $user->id)
+            ->update(['telephone_parents' => $request->telephone_parents]);
+    
+    
+        }
+
+                    //  EMAIL update  //
+
+                    if($request->email)
+                    {
+                       
+                    // validation des données
+                     $validate_mail= validator::make($request->all(),[
+                        "email"=>"required|min:3",
+                     ]);
+            
+                     //verification des données entrées
+                     if($validate_mail->fails()){
                         return response()->json([
-                            "statusCode"=>200,
-                            "status" =>true,
-                            "message"=> "modification patient effectué avec succes",
-                            "user"=>$update
-                        ],200); 
-                    }
-        
-        } catch (\Throwable $th) {
-                        //throw $th;
+                            'statusCode' => 401,
+                            'status' => false,
+                            'message' => 'telephone parent obligatoire',
+                            'errors' => $validate_mail->errors()
+                        ], 401);
+            
+                    //modification des information du livreurs
+                    } 
+                    Livreur::where('id', $livreur->id)
+                    ->where('id_users', $user->id)
+                    ->update(['email' => $request->email]);
+            
+            
+                }
+
+                    //  NOM PARENT update  //
+
+                    if($request->nom_parent)
+                    {
+                       
+                    // validation des données
+                     $validate_NomP= validator::make($request->all(),[
+                        "nom_parent"=>"required|min:3",
+                     ]);
+            
+                     //verification des données entrées
+                     if($validate_NomP->fails()){
                         return response()->json([
-                            "statusCode"=>500,
-                            "status" =>false,
-                            "message"=>$th->getMessage()
-                        ],500); 
-                    }
+                            'statusCode' => 401,
+                            'status' => false,
+                            'message' => 'nom parent obligatoire',
+                            'errors' => $validate_NomP->errors()
+                        ], 401);
+            
+                    //modification des information du livreurs
+                    } 
+                    Livreur::where('id', $livreur->id)
+                    ->where('id_users', $user->id)
+                    ->update(['nom_parent' => $request->nom_parent]);
+            
+            
+                }
+                    //  STATUS update  //
+
+                    if($request->actif)
+                    {
+                       
+                    // validation des données
+                     $validate_Act= validator::make($request->all(),[
+                        "actif"=>"required|min:3",
+                     ]);
+            
+                     //verification des données entrées
+                     if($validate_Act->fails()){
+                        return response()->json([
+                            'statusCode' => 401,
+                            'status' => false,
+                            'message' => 'actif obligatoire',
+                            'errors' => $validate_Act->errors()
+                        ], 401);
+            
+                    //modification des information du livreurs
+                    } 
+                    Livreur::where('id', $livreur->id)
+                    ->where('id_users', $user->id)
+                    ->update(['actif' => $request->actif]);
+            
+            
+                }
+
+                return response()->json([
+                    'statusCode' => 200,
+                    'status' => True,
+                    'message' => 'données modifié avec sucess',
+                    'Livreur' => $livreur
+                ], 401);
 
 }
-
 
 /**
  *-----------
